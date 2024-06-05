@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id String @id @default(uuid())
+  name String
+  email String @unique
+  password String
+  borrowings Borrowing[]
+  fines Fine[]
+
+  @@map("users")
+}
+
+model Book {
+  id String @id @default(uuid())
+  title String
+  author_name String
+  pages Int
+  categories Category[]
+  year Int
+  is_avaliable Boolean @default(true)
+  borrowings Borrowing[]
+
+  @@map("books")
+}
+
+model Category {
+  id String @id @default(uuid())
+  name String
+  book Book[]
+}
+
+model Borrowing {
+  id String @id @default(uuid())
+  delivery_date DateTime
+  created_at DateTime @default(now()) 
+  finished_at DateTime?
+  user User @relation(fields: [user_id], references: [id])
+  user_id String
+  book Book @relation(fields: [book_id], references: [id])
+  book_id String
+
+  @@map("borrowings")
+}
+
+model Fine {
+  id String @id @default(uuid())
+  reason String
+  value String
+  user User @relation(fields: [user_id], references: [id])
+  user_id String
+  created_at DateTime @default(now())
+  paid_at DateTime?
+  @@map("fines")
+}
