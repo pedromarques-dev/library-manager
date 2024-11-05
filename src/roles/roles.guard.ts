@@ -22,7 +22,7 @@ export class RolesGuard implements CanActivate {
             return true;
         }
         const { headers } = context.switchToHttp().getRequest();
-        if (!headers.authorization.split('Bearer')[1]) {
+        if (!headers.authorization?.split('Bearer')[1]) {
             throw new UnauthorizedException();
         }
         const userRole = await getRole(headers.authorization);
