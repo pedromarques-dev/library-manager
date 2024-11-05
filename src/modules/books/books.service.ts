@@ -2,14 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { CreateBookRequestDto } from './dto/create-book-request.dto';
 import { BooksRepository } from './repositories/books.repositories';
 import { UpdateBookStatusDto } from './dto/update-book-status.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class BooksService {
-    constructor(
-        private readonly booksRepository: BooksRepository,
-        private readonly prismaService: PrismaService,
-    ) {}
+    constructor(private readonly booksRepository: BooksRepository) {}
 
     async create(createBookRequestDto: CreateBookRequestDto) {
         const { author_name, categories, pages, title, year, is_avaliable } =

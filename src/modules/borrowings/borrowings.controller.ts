@@ -12,6 +12,8 @@ import { ReturnBookDto } from './dto/update-borrowing.dto';
 import { JwtAuthGuard } from '../auth/jwt/jwt-auth.guard';
 import { AuthenticateHeadersDto } from '../auth/dto/authenticate-headers.dto';
 import { FindAllBorrowingsDto } from './dto/find-all-borrowings.dto';
+import { Roles } from 'src/roles/roles.decorator';
+import { Role } from '@prisma/client';
 
 @Controller('borrowings')
 @UseGuards(JwtAuthGuard)
@@ -19,6 +21,7 @@ export class BorrowingsController {
     constructor(private readonly borrowingsService: BorrowingsService) {}
 
     @Post()
+    @Roles(Role.USER)
     async reserve(
         @Body() createBorrowingDto: CreateBorrowingDto,
         @Headers() { authorization }: AuthenticateHeadersDto,
@@ -30,6 +33,7 @@ export class BorrowingsController {
     }
 
     @Post('/return')
+    @Roles(Role.USER)
     async returnBook(
         @Body() returnBookDto: ReturnBookDto,
         @Headers() { authorization }: AuthenticateHeadersDto,
@@ -38,7 +42,7 @@ export class BorrowingsController {
     }
 
     @Get()
-    async findAllBorrowingsInProgress(
+    async findAllBorrowings(
         @Body() body: FindAllBorrowingsDto,
         @Headers() { authorization }: AuthenticateHeadersDto,
     ) {

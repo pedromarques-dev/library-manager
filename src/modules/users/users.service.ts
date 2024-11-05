@@ -1,24 +1,29 @@
 import {
     ConflictException,
+    Inject,
     Injectable,
     NotFoundException,
+    UnauthorizedException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { UsersRepository } from './repositories/users.repository';
 import { hash } from 'bcrypt';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { getTokenUser } from 'src/utils/get-token-user';
+import { getRole } from 'src/utils/get-role';
+import { IUserRepository, userRepository } from './interfaces/user.interface';
 
 @Injectable()
 export class UsersService {
     constructor(
         private readonly prismaService: PrismaService,
-        private readonly usersRepository: UsersRepository,
+
+        @Inject(userRepository)
+        private readonly usersRepository: IUserRepository,
     ) {}
 
     async create(createUserDto: CreateUserDto) {
-        const { name, email, password } = createUserDto;
+        const { name, email, password, role } = createUserDto;
 
         const userWithSameEmail = await this.prismaService.user.findUnique({
             where: {
@@ -36,6 +41,7 @@ export class UsersService {
             name,
             email,
             password: passwordHash,
+            role,
         });
     }
 
@@ -65,8 +71,14 @@ export class UsersService {
         if (!userExists) {
             throw new NotFoundException('User not found.');
         }
-
         const userLogged = getTokenUser(authorization);
+        const userLoggedRole = await getRole(authorization);
+
+        const isAdmin = userLoggedRole === 'ADMIN';
+
+        if (!isAdmin && userLogged !== userExists.id) {
+            throw new UnauthorizedException("You can't update other user");
+        }
 
         const emailExists = await this.usersRepository.findByEmail(
             updateUserDto.email,
@@ -76,10 +88,7 @@ export class UsersService {
             throw new ConflictException('Email already exists');
         }
 
-        const user = await this.usersRepository.update(
-            userLogged,
-            updateUserDto,
-        );
+        const user = await this.usersRepository.update(id, updateUserDto);
 
         return {
             ...user,

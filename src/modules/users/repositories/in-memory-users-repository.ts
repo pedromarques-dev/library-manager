@@ -1,17 +1,27 @@
-import { PrismaService } from 'src/prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
 import { UpdateUserDto } from '../dto/update-user.dto';
-import { Prisma } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
+import { randomUUID } from 'crypto';
 import { IUserRepository } from '../interfaces/user.interface';
+// import { UserInterface } from '../interfaces/user.interface';
 
 @Injectable()
-export class UsersRepository implements IUserRepository {
-    constructor(private prisma: PrismaService) {}
+export class InMemoryUsersRepository implements IUserRepository {
+    public prisma = new PrismaClient();
+    public items = [];
 
     async create(data: Prisma.UserCreateInput) {
-        await this.prisma.user.create({
-            data,
-        });
+        const user = {
+            id: randomUUID(),
+            name: data.name,
+            email: data.email,
+            password: data.password,
+            role: data.role,
+            fines: null,
+            borrowings: null,
+        };
+
+        this.items.push(user);
     }
 
     async findAll() {

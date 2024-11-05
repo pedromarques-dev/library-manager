@@ -20,6 +20,7 @@ model User {
   password String
   borrowings Borrowing[]
   fines Fine[]
+  role Role
 
   @@map("users")
 }
@@ -65,4 +66,9 @@ model Fine {
   created_at DateTime @default(now())
   paid_at DateTime?
   @@map("fines")
+}
+
+enum Role {
+  ADMIN
+  USER
 }
