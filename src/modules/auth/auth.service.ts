@@ -1,8 +1,8 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { compare } from 'bcrypt';
-import { AuthenticateDto } from './dto/authenticate.dto';
 import { JwtService } from '@nestjs/jwt';
+import { compare } from 'bcrypt';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { AuthenticateDto } from './dto/authenticate.dto';
 
 @Injectable()
 export class AuthService {

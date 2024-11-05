@@ -5,12 +5,12 @@ import {
     NotFoundException,
     UnauthorizedException,
 } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { hash } from 'bcrypt';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { getTokenUser } from 'src/utils/get-token-user';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { getRole } from 'src/utils/get-role';
+import { getTokenUser } from 'src/utils/get-token-user';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { IUserRepository, userRepository } from './interfaces/user.interface';
 
 @Injectable()
@@ -36,13 +36,16 @@ export class UsersService {
         }
 
         const passwordHash = await hash(password, 8);
-
-        await this.usersRepository.create({
-            name,
-            email,
-            password: passwordHash,
-            role,
-        });
+        try {
+            await this.usersRepository.create({
+                name,
+                email,
+                password: passwordHash,
+                role,
+            });
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     async findAll() {
