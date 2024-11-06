@@ -12,5 +12,11 @@ export const getRole = async (authorization: string) => {
         },
     });
 
-    return user.role;
+    if (!user || !user.role) {
+        console.log(user);
+    }
+
+    if (user.role) {
+        return user.role;
+    }
 };
