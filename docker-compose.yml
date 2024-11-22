@@ -3,7 +3,9 @@ version: '3.8'
 services:
   postgres:
     container_name: library-manager   
-    image: postgres
+    image: postgres:17.1-alpine3.20
+    networks:
+      - library-manager-app
     ports:
     - 5432:5432
     environment:
@@ -13,3 +15,25 @@ services:
       PGDATA: /data/postgres
     volumes:
       - ./data/pg:/data/postgres
+  api:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: library-manager-api  
+    depends_on:
+      - postgres
+    networks:
+      - library-manager-app
+    ports:
+    - 3333:3333
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+      - /app/node_modules
+networks:
+  library-manager-app:
+    driver: bridge
+
+volumes:
+  data:

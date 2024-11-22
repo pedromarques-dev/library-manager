@@ -1,15 +1,20 @@
-FROM node:18
+# Base image
+FROM node:22-slim
+RUN apt update && apt install -y openssl
 
-RUN npm i -g @nestjs/cli
+# Create app directory
+WORKDIR /usr/src/app
 
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
 COPY package*.json ./
 
-RUN npm install
-
+# Bundle app source
 COPY . .
 
-RUN npm run build
+RUN npm install && npx prisma migrate deploy
 
+# Expose the port on which the app will run
 EXPOSE 3333
 
-CMD ["npm", "run", "start:prod"]
+# Start the server using the production build
+CMD ["npm", "run", "start"]
