@@ -42,7 +42,8 @@ lerna-debug.log*
 .env.test.local
 .env.production.local
 .env.local
-
+.docker_password.txt
+.terraform*
 # temp directory
 .temp
 .tmp
