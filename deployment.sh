@@ -14,5 +14,5 @@ cat ~/.docker_password.txt | sudo docker login --username pedromarquesdocker --p
 
 # start the container to test the image
 #sudo docker run -dp 80:80 <repository-name> 
-sudo docker run --env-file ~/.env -dp 3333:3333 pedromarquesdocker/library-manager-api:v1
+sudo docker run --env-file ~/.env -dp 3333:3333 pedromarquesdocker/library-manager-api:v4.2
 
