@@ -1,6 +1,5 @@
 import {
     ConflictException,
-    Inject,
     Injectable,
     NotFoundException,
     UnauthorizedException,
@@ -11,15 +10,13 @@ import { getRole } from 'src/utils/get-role';
 import { getTokenUser } from 'src/utils/get-token-user';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { IUserRepository, userRepository } from './interfaces/user.interface';
+import { UsersRepository } from './repositories/users.repository';
 
 @Injectable()
 export class UsersService {
     constructor(
         private readonly prismaService: PrismaService,
-
-        @Inject(userRepository)
-        private readonly usersRepository: IUserRepository,
+        private readonly usersRepository: UsersRepository,
     ) {}
 
     async create(createUserDto: CreateUserDto) {
@@ -36,16 +33,13 @@ export class UsersService {
         }
 
         const passwordHash = await hash(password, 8);
-        try {
-            await this.usersRepository.create({
-                name,
-                email,
-                password: passwordHash,
-                role,
-            });
-        } catch (error) {
-            console.log(error);
-        }
+
+        await this.usersRepository.create({
+            name,
+            email,
+            password: passwordHash,
+            role,
+        });
     }
 
     async findAll() {

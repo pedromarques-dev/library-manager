@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { UpdateUserDto } from '../dto/update-user.dto';
 import { Prisma, PrismaClient } from '@prisma/client';
 import { randomUUID } from 'crypto';
+import { UpdateUserDto } from '../dto/update-user.dto';
 import { IUserRepository } from '../interfaces/user.interface';
 // import { UserInterface } from '../interfaces/user.interface';
 

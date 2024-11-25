@@ -9,9 +9,13 @@ export class UsersRepository implements IUserRepository {
     constructor(private prisma: PrismaService) {}
 
     async create(data: Prisma.UserCreateInput) {
-        await this.prisma.user.create({
-            data,
-        });
+        try {
+            await this.prisma.user.create({
+                data,
+            });
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     async findAll() {

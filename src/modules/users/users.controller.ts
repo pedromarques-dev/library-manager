@@ -9,7 +9,6 @@ import {
     HttpCode,
     Headers,
     UseGuards,
-    HttpStatus,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -24,7 +23,6 @@ export class UsersController {
     constructor(private readonly usersService: UsersService) {}
 
     @Post()
-    @HttpCode(HttpStatus.CREATED)
     async create(@Body() body: CreateUserDto) {
         return this.usersService.create(body);
     }
