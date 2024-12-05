@@ -1,11 +1,11 @@
 import { JwtService } from '@nestjs/jwt';
 
-export function getTokenUser(authorization: string) {
+export async function getTokenUser(authorization: string) {
     const jwt = new JwtService();
 
     const token = authorization.slice(7);
 
-    const userLogged = jwt.decode(token);
+    const userLogged = await jwt.decode(token);
 
     return userLogged.sub;
 }

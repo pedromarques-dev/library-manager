@@ -4,7 +4,7 @@ import { getTokenUser } from './get-token-user';
 export const getRole = async (authorization: string) => {
     const prisma = new PrismaService();
 
-    const id = getTokenUser(authorization);
+    const id = await getTokenUser(authorization);
 
     const user = await prisma.user.findUnique({
         where: {

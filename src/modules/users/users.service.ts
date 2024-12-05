@@ -46,12 +46,16 @@ export class UsersService {
         const users = await this.usersRepository.findAll();
 
         return {
-            users,
+            users: users.map((user) => ({ ...user, password: undefined })),
         };
     }
 
     async findOne(id: string) {
         const user = await this.usersRepository.findOne(id);
+
+        if (!user) {
+            throw new NotFoundException('Usuário não encontrado.');
+        }
 
         return {
             user,
@@ -68,7 +72,7 @@ export class UsersService {
         if (!userExists) {
             throw new NotFoundException('User not found.');
         }
-        const userLogged = getTokenUser(authorization);
+        const userLogged = await getTokenUser(authorization);
         const userLoggedRole = await getRole(authorization);
 
         const isAdmin = userLoggedRole === 'ADMIN';

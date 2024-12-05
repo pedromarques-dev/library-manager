@@ -39,7 +39,7 @@ export class BorrowingsService {
         if (!bookHasReserved) {
             throw new BadRequestException('Book has reserved.');
         }
-        const userLogged = getTokenUser(authorization);
+        const userLogged = await getTokenUser(authorization);
 
         const userHasFine =
             await this.finesRepository.findFirstFine(userLogged);
@@ -68,7 +68,7 @@ export class BorrowingsService {
 
         const borrowing = await this.borrowingsRepository.findOne(id);
 
-        const userLogged = getTokenUser(authorization);
+        const userLogged = await getTokenUser(authorization);
 
         const diffBetweenDeliveryDates = actualDate.diff(
             borrowing.delivery_date,
@@ -94,7 +94,7 @@ export class BorrowingsService {
         authorization: string,
     ) {
         const { finishedAt } = FindAllBorrowingsDto;
-        const userLogged = getTokenUser(authorization);
+        const userLogged = await getTokenUser(authorization);
 
         const borrowings = await this.borrowingsRepository.findAllBorrowings(
             userLogged,
