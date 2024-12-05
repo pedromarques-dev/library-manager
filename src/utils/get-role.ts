@@ -1,3 +1,4 @@
+import { UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { getTokenUser } from './get-token-user';
 
@@ -12,7 +13,8 @@ export const getRole = async (authorization: string) => {
         },
     });
 
-    if (user.role) {
-        return user.role;
+    if (!user.role) {
+        throw new UnauthorizedException('Token de autenticação nao encontrado');
     }
+    return user.role;
 };

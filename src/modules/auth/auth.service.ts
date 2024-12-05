@@ -21,13 +21,13 @@ export class AuthService {
         });
 
         if (!emailExists) {
-            throw new BadRequestException('Invalid Credentials');
+            throw new BadRequestException('Credenciais invalidas');
         }
 
         const isPasswordMatch = await compare(password, emailExists.password);
 
         if (!isPasswordMatch) {
-            throw new BadRequestException('Invalid Credentials');
+            throw new BadRequestException('Credenciais Invalidas');
         }
 
         const tokenPayload = { sub: emailExists.id };

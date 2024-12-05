@@ -29,7 +29,7 @@ export class UsersService {
         });
 
         if (userWithSameEmail) {
-            throw new ConflictException('Email already exists');
+            throw new ConflictException('Email já existente.');
         }
 
         const passwordHash = await hash(password, 8);
@@ -70,7 +70,7 @@ export class UsersService {
         const userExists = await this.usersRepository.findOne(id);
 
         if (!userExists) {
-            throw new NotFoundException('User not found.');
+            throw new NotFoundException('User não encontrado.');
         }
         const userLogged = await getTokenUser(authorization);
         const userLoggedRole = await getRole(authorization);
@@ -78,7 +78,9 @@ export class UsersService {
         const isAdmin = userLoggedRole === 'ADMIN';
 
         if (!isAdmin && userLogged !== userExists.id) {
-            throw new UnauthorizedException("You can't update other user");
+            throw new UnauthorizedException(
+                'Você não tem permissão para editar outro usuário',
+            );
         }
 
         const emailExists = await this.usersRepository.findByEmail(
@@ -86,7 +88,7 @@ export class UsersService {
         );
 
         if (emailExists && userExists.email !== emailExists.email) {
-            throw new ConflictException('Email already exists');
+            throw new ConflictException('Email já existente.');
         }
 
         const user = await this.usersRepository.update(id, updateUserDto);

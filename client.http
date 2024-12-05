@@ -7,3 +7,7 @@ Content-Type: application/json
     "email": "phmarkes@hotmail.com",
     "password": "1234"
 }
+
+###  @name users
+GET http://localhost:3333/users
+Content-Type: application/json
