@@ -1,0 +1,9 @@
+
+###  @name authenticate
+POST http://localhost:3333/auth
+Content-Type: application/json
+
+{
+    "email": "phmarkes@hotmail.com",
+    "password": "1234"
+}

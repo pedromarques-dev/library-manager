@@ -36,6 +36,10 @@ export class AuthService {
 
         return {
             access_token,
+            currentUser: {
+                ...emailExists,
+                password: undefined,
+            },
         };
     }
 }
