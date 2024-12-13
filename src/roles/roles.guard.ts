@@ -25,8 +25,14 @@ export class RolesGuard implements CanActivate {
         if (!headers.authorization?.split('Bearer')[1]) {
             throw new UnauthorizedException();
         }
-        const userRole = await getRole(headers.authorization);
-        const teste = requiredRoles.some((role) => userRole === role);
-        return teste;
+        try {
+            const userRole = await getRole(headers.authorization);
+            const teste = requiredRoles.some((role) => userRole === role);
+            return teste;
+        } catch (error) {
+            throw new UnauthorizedException(
+                'Voce nao possui permissão para acessar esse recurso',
+            );
+        }
     }
 }

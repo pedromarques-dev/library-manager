@@ -3,11 +3,16 @@ import {
     IsEmail,
     IsEnum,
     IsNotEmpty,
+    IsOptional,
     IsString,
     MinLength,
 } from 'class-validator';
 
 export class CreateUserDto {
+    @IsString()
+    @IsOptional()
+    avatar_url: string;
+
     @IsString()
     @MinLength(3, { message: 'O nome deve ter pelo menos 3 caracteres!' })
     name: string;

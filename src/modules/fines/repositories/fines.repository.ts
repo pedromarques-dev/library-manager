@@ -1,6 +1,6 @@
-import { IFinesRepository } from '../interfaces/fines.interface';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma, PrismaClient } from '@prisma/client';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { IFinesRepository } from '../interfaces/fines.interface';
 
 export class FinesRepository implements IFinesRepository {
     private prisma: PrismaClient;
@@ -18,6 +18,16 @@ export class FinesRepository implements IFinesRepository {
         });
 
         return fine;
+    }
+
+    async findAll() {
+        const fines = await this.prisma.fine.findMany({
+            include: {
+                user: true,
+            },
+        });
+
+        return fines;
     }
 
     async findUnique(id: string) {

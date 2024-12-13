@@ -8,4 +8,8 @@ export class FinesService {
     async payFine(id: string) {
         await this.finesRepository.payFine(id);
     }
+
+    async findAll() {
+        return this.finesRepository.findAll();
+    }
 }

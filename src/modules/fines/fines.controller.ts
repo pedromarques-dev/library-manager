@@ -1,4 +1,4 @@
-import { Controller, Post, Param, UseGuards } from '@nestjs/common';
+import { Controller, Post, Param, UseGuards, Get } from '@nestjs/common';
 import { FinesService } from './fines.service';
 import { PayFineParamDto } from './dto/pay-fine-params.dto';
 import { JwtAuthGuard } from '../auth/jwt/jwt-auth.guard';
@@ -14,5 +14,10 @@ export class FinesController {
     @Roles(Role.USER)
     async pay(@Param() { id }: PayFineParamDto) {
         return this.finesService.payFine(id);
+    }
+
+    @Get()
+    async findAll() {
+        return this.finesService.findAll();
     }
 }
