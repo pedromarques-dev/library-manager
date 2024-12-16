@@ -1,10 +1,18 @@
-import { Controller, Get, Post, Body, Query, UseGuards } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Get,
+    Param,
+    Post,
+    Query,
+    UseGuards,
+} from '@nestjs/common';
+import { Role } from '@prisma/client';
+import { Roles } from 'src/roles/roles.decorator';
+import { JwtAuthGuard } from '../auth/jwt/jwt-auth.guard';
 import { BooksService } from './books.service';
 import { CreateBookRequestDto } from './dto/create-book-request.dto';
 import { FindAllBooksDto } from './dto/find-all-books.dto';
-import { JwtAuthGuard } from '../auth/jwt/jwt-auth.guard';
-import { Roles } from 'src/roles/roles.decorator';
-import { Role } from '@prisma/client';
 
 @Controller('books')
 @UseGuards(JwtAuthGuard)
@@ -20,5 +28,10 @@ export class BooksController {
     @Get()
     async findAll(@Query() { is_avaliable }: FindAllBooksDto) {
         return this.booksService.findAll(is_avaliable);
+    }
+
+    @Get(':id')
+    async findOne(@Param() id: string) {
+        return this.booksService.findOne(id);
     }
 }

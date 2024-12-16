@@ -1,8 +1,8 @@
-import { PrismaService } from 'src/prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
-import { BookInterface } from '../interfaces/book.interface';
-import { UpdateBookStatusDto } from '../dto/update-book-status.dto';
 import { Prisma } from '@prisma/client';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { UpdateBookStatusDto } from '../dto/update-book-status.dto';
+import { BookInterface } from '../interfaces/book.interface';
 
 @Injectable()
 export class BooksRepository implements BookInterface {
@@ -42,6 +42,7 @@ export class BooksRepository implements BookInterface {
     }
 
     async updateAvailableStatus(updateBookStatusDto: UpdateBookStatusDto) {
+        console.log(updateBookStatusDto);
         await this.prisma.book.update({
             where: {
                 id: updateBookStatusDto.book_id,

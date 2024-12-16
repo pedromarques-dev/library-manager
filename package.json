@@ -13,7 +13,7 @@
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "vitest src/modules",
     "docker:db": "docker-compose up postgres",
-    "docker:api": "docker-compose up api --build"
+    "docker:api": "docker-compose up api --build --watch"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",

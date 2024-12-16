@@ -3,20 +3,20 @@ import {
     Injectable,
     UnauthorizedException,
 } from '@nestjs/common';
-import { CreateBorrowingDto } from './dto/create-borrowing.dto';
-import { BorrowingRepository } from './repositories/borrowing.repository';
-import { ReturnBookDto } from './dto/update-borrowing.dto';
-import { BooksRepository } from '../books/repositories/books.repositories';
 import * as moment from 'moment';
-import { FindAllBorrowingsDto } from './dto/find-all-borrowings.dto';
-import { getTokenUser } from 'src/utils/get-token-user';
-import { MinLimitDeliveryDateStrategy } from 'src/strategies/delivery-date/min-limit-delivery-date.strategy';
-import { MediumLimitDeliveryDateStrategy } from 'src/strategies/delivery-date/medium-limit-delivery-data.strategy';
 import { MaxLimitDeliveryDateStrategy } from 'src/strategies/delivery-date/max-limit-delivery-date.strategy';
-import { MinValueFineStrategy } from 'src/strategies/fine/min-value-fine.strategy';
-import { MediumValueFineStrategy } from 'src/strategies/fine/medium-value-fine.strategy';
+import { MediumLimitDeliveryDateStrategy } from 'src/strategies/delivery-date/medium-limit-delivery-data.strategy';
+import { MinLimitDeliveryDateStrategy } from 'src/strategies/delivery-date/min-limit-delivery-date.strategy';
 import { MaxValueFineStrategy } from 'src/strategies/fine/max-value-fine.strategy';
+import { MediumValueFineStrategy } from 'src/strategies/fine/medium-value-fine.strategy';
+import { MinValueFineStrategy } from 'src/strategies/fine/min-value-fine.strategy';
+import { getRole } from 'src/utils/get-role';
+import { getTokenUser } from 'src/utils/get-token-user';
+import { BooksRepository } from '../books/repositories/books.repositories';
 import { FinesRepository } from '../fines/repositories/fines.repository';
+import { CreateBorrowingDto } from './dto/create-borrowing.dto';
+import { ReturnBookDto } from './dto/update-borrowing.dto';
+import { BorrowingRepository } from './repositories/borrowing.repository';
 
 @Injectable()
 export class BorrowingsService {
@@ -67,8 +67,13 @@ export class BorrowingsService {
         const actualDate = moment(new Date()).utc().subtract(3, 'hours');
 
         const borrowing = await this.borrowingsRepository.findOne(id);
-
         const userLogged = await getTokenUser(authorization);
+
+        if (borrowing.user_id !== userLogged) {
+            throw new UnauthorizedException(
+                'Voce nao pode devolver esse livro.',
+            );
+        }
 
         const diffBetweenDeliveryDates = actualDate.diff(
             borrowing.delivery_date,
@@ -90,19 +95,33 @@ export class BorrowingsService {
     }
 
     async findAllBorrowings(
-        FindAllBorrowingsDto: FindAllBorrowingsDto,
         authorization: string,
+        finishedAt?: string,
+        userId?: string,
     ) {
-        const { finishedAt } = FindAllBorrowingsDto;
         const userLogged = await getTokenUser(authorization);
+        const userRole = await getRole(authorization);
+        const isUser = userRole === 'USER';
 
-        const borrowings = await this.borrowingsRepository.findAllBorrowings(
-            userLogged,
-            finishedAt,
-        );
+        if (isUser && userId && userId !== userLogged) {
+            throw new UnauthorizedException();
+        }
+        const borrowings = await this.borrowingsRepository.findAllBorrowings({
+            userId: isUser ? userLogged : userId,
+            finished_at: finishedAt === 'null' ? null : undefined,
+        });
 
         return {
             borrowings,
+        };
+    }
+
+    async findBorrowingById(id: string) {
+        const borrowing =
+            await this.borrowingsRepository.findOneBorrowingById(id);
+
+        return {
+            borrowing,
         };
     }
 

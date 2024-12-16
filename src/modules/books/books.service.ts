@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateBookRequestDto } from './dto/create-book-request.dto';
 import { BooksRepository } from './repositories/books.repositories';
 import { UpdateBookStatusDto } from './dto/update-book-status.dto';
@@ -27,6 +27,16 @@ export class BooksService {
         const booksAvaliables = await this.booksRepository.findAll(isAvaliable);
 
         return booksAvaliables;
+    }
+
+    async findOne(id: string) {
+        const book = await this.booksRepository.findOne(id);
+
+        if (!book) {
+            throw new NotFoundException('Livro não encontrado');
+        }
+
+        return book;
     }
 
     async updateStatus(updateBookStatusDto: UpdateBookStatusDto) {

@@ -20,8 +20,11 @@ export class FinesRepository implements IFinesRepository {
         return fine;
     }
 
-    async findAll() {
+    async findAll(userId: string) {
         const fines = await this.prisma.fine.findMany({
+            where: {
+                user_id: userId,
+            },
             include: {
                 user: true,
             },

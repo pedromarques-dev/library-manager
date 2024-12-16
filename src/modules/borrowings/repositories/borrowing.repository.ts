@@ -1,6 +1,6 @@
+import { Borrowing, Prisma, PrismaClient } from '@prisma/client';
 import { ReturnBookDto } from '../dto/update-borrowing.dto';
 import { IBorrowingRepository } from '../interfaces/borrowing.interface';
-import { Prisma, PrismaClient } from '@prisma/client';
 
 export class BorrowingRepository implements IBorrowingRepository {
     private prisma;
@@ -17,14 +17,18 @@ export class BorrowingRepository implements IBorrowingRepository {
         });
     }
 
-    async findOne(id: string) {
+    async findOne(id: string): Promise<Borrowing | null> {
         const borrowing = await this.prisma.borrowing.findUnique({
             where: {
                 id,
             },
         });
 
-        return borrowing;
+        if (!borrowing) {
+            return null;
+        }
+
+        return borrowing as Borrowing;
     }
 
     async returnBook({ id }: ReturnBookDto) {
@@ -38,11 +42,18 @@ export class BorrowingRepository implements IBorrowingRepository {
         });
     }
 
-    async findAllBorrowings(id: string, finished_at: Date) {
+    async findAllBorrowings({
+        userId,
+        finished_at,
+    }: {
+        userId: string;
+        finished_at: string;
+    }) {
+        console.log(finished_at, 'reposito');
         const borrowings = await this.prisma.borrowing.findMany({
             where: {
-                finished_at: !finished_at ? null : undefined,
-                user_id: id,
+                finished_at,
+                user_id: userId,
             },
             orderBy: {
                 created_at: 'desc',
@@ -60,5 +71,25 @@ export class BorrowingRepository implements IBorrowingRepository {
         });
 
         return borrowings;
+    }
+
+    async findOneBorrowingById(id: string) {
+        const borrowing = await this.prisma.borrowing.findMany({
+            where: {
+                id,
+            },
+            include: {
+                user: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true,
+                    },
+                },
+                book: true,
+            },
+        });
+
+        return borrowing;
     }
 }
