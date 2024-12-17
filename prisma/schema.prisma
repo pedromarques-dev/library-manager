@@ -21,7 +21,7 @@ model User {
   password String
   borrowings Borrowing[]
   fines Fine[]
-  role Role
+  role Role @default(USER)
 
   @@map("users")
 }
@@ -54,6 +54,7 @@ model Borrowing {
   user_id String
   book Book @relation(fields: [book_id], references: [id])
   book_id String
+  fines Fine[]
 
   @@map("borrowings")
 }
@@ -64,6 +65,8 @@ model Fine {
   value String
   user User @relation(fields: [user_id], references: [id])
   user_id String
+  borrowing Borrowing @relation(fields: [borrowing_id], references: [id])
+  borrowing_id String
   created_at DateTime @default(now())
   paid_at DateTime?
   @@map("fines")

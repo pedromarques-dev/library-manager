@@ -27,6 +27,11 @@ export class FinesRepository implements IFinesRepository {
             },
             include: {
                 user: true,
+                borrowing: {
+                    include: {
+                        book: true,
+                    },
+                },
             },
         });
 

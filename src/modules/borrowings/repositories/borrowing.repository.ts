@@ -49,7 +49,6 @@ export class BorrowingRepository implements IBorrowingRepository {
         userId: string;
         finished_at: string;
     }) {
-        console.log(finished_at, 'reposito');
         const borrowings = await this.prisma.borrowing.findMany({
             where: {
                 finished_at,

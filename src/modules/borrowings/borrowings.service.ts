@@ -81,7 +81,11 @@ export class BorrowingsService {
         );
 
         if (actualDate.isAfter(borrowing.delivery_date)) {
-            this.calculateFine(diffBetweenDeliveryDates, userLogged);
+            this.calculateFine(
+                diffBetweenDeliveryDates,
+                userLogged,
+                borrowing.id,
+            );
         }
 
         await this.borrowingsRepository.returnBook({
@@ -134,18 +138,27 @@ export class BorrowingsService {
         if (page > 250) return new MaxLimitDeliveryDateStrategy().calculate();
     }
 
-    private async calculateFine(days: number, userId: string) {
+    private async calculateFine(
+        days: number,
+        userId: string,
+        borrowingId: string,
+    ) {
         const daysAbs = Math.abs(days);
 
-        if (daysAbs <= 7) new MinValueFineStrategy().calculate(userId);
+        if (daysAbs <= 7)
+            new MinValueFineStrategy().calculate(userId, borrowingId);
 
         if (daysAbs > 7 && daysAbs <= 20)
-            new MediumValueFineStrategy().calculate(userId);
+            new MediumValueFineStrategy().calculate(userId, borrowingId);
 
         if (daysAbs > 20) {
             const sumTotalValue = (daysAbs - 30) * 2 + 10;
 
-            new MaxValueFineStrategy().calculate(userId, sumTotalValue);
+            new MaxValueFineStrategy().calculate(
+                userId,
+                borrowingId,
+                sumTotalValue,
+            );
         }
     }
 }
