@@ -1,13 +1,22 @@
-
 ###  @name authenticate
 POST http://localhost:3333/auth
 Content-Type: application/json
 
 {
-    "email": "phmarkes@hotmail.com",
+    "email": "bolsonaro22@teste.com",
     "password": "1234"
 }
 
-###  @name users
-GET http://localhost:3333/users
+###  @name register
+GET http://localhost:3333/fines
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NmVlMDJjNy1lYTViLTQwYzYtYjA2Zi0wZWU2ZmY2YWU1MWYiLCJpYXQiOjE3MzQ0NTU2MzcsImV4cCI6MTczNDQ2NTYzN30.GYEeeFYTVQ84MEKeqBcJzE4uaNHvmrUBmsNC5txLsDI
+
+###  @name return
+POST http://localhost:3333/borrowings/return
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NmVlMDJjNy1lYTViLTQwYzYtYjA2Zi0wZWU2ZmY2YWU1MWYiLCJpYXQiOjE3MzQ0NTU2MzcsImV4cCI6MTczNDQ2NTYzN30.GYEeeFYTVQ84MEKeqBcJzE4uaNHvmrUBmsNC5txLsDI
+
+{
+    "id": "70e513d2-2cb1-469b-95f5-22ab5fc6e54b"
+}

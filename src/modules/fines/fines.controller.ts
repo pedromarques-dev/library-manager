@@ -29,7 +29,7 @@ export class FinesController {
     }
 
     @Get(':id')
-    async findOne(@Param() id: string) {
-        return this.finesService.findOne(id);
+    async findOne(@Param() param: { id: string }) {
+        return this.finesService.findOne(param.id);
     }
 }

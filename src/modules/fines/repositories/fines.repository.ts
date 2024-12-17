@@ -43,6 +43,14 @@ export class FinesRepository implements IFinesRepository {
             where: {
                 id,
             },
+            include: {
+                user: true,
+                borrowing: {
+                    include: {
+                        book: true,
+                    },
+                },
+            },
         });
 
         return fine;
