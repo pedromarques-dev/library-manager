@@ -1,14 +1,14 @@
 import {
-    IsBooleanString,
+    IsBoolean,
     IsNumberString,
     IsOptional,
     IsString,
 } from 'class-validator';
 
-export class FindAllBooksDto {
-    @IsBooleanString()
+export class FindAllBooksRepositoryDto {
+    @IsBoolean()
     @IsOptional()
-    is_avaliable: string;
+    is_avaliable: boolean;
 
     @IsString()
     @IsOptional()

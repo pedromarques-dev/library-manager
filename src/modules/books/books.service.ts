@@ -1,7 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateBookRequestDto } from './dto/create-book-request.dto';
-import { BooksRepository } from './repositories/books.repositories';
+import { FindAllBooksDto } from './dto/find-all-books.dto';
 import { UpdateBookStatusDto } from './dto/update-book-status.dto';
+import { BooksRepository } from './repositories/books.repositories';
 
 @Injectable()
 export class BooksService {
@@ -23,8 +24,24 @@ export class BooksService {
         });
     }
 
-    async findAll(isAvaliable: string) {
-        const booksAvaliables = await this.booksRepository.findAll(isAvaliable);
+    async findAll(query: FindAllBooksDto, page: number) {
+        let isAvaliable = query.is_avaliable === 'true';
+        if (!query.is_avaliable) {
+            delete query.is_avaliable;
+            isAvaliable = undefined;
+        }
+
+        const queryParams = {
+            ...query,
+            year: query.year ? Number(query.year) : undefined,
+            pages: query.pages ? Number(query.pages) : undefined,
+            is_avaliable: isAvaliable,
+        };
+
+        const booksAvaliables = await this.booksRepository.findAll(
+            queryParams,
+            page,
+        );
 
         return booksAvaliables;
     }

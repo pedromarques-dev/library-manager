@@ -26,8 +26,8 @@ export class BooksController {
     }
 
     @Get()
-    async findAll(@Query() { is_avaliable }: FindAllBooksDto) {
-        return this.booksService.findAll(is_avaliable);
+    async findAll(@Query() query: FindAllBooksDto) {
+        return this.booksService.findAll(query, Number(query.page));
     }
 
     @Get(':id')

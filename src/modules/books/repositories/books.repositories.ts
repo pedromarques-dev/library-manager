@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { FindAllBooksRepositoryDto } from '../dto/find-all-books-repository';
 import { UpdateBookStatusDto } from '../dto/update-book-status.dto';
 import { BookInterface } from '../interfaces/book.interface';
 
@@ -16,17 +17,35 @@ export class BooksRepository implements BookInterface {
         });
     }
 
-    async findAll(is_avaliable: string) {
+    async findAll(query: FindAllBooksRepositoryDto, page: number) {
+        const perPage = 10;
         const books = await this.prisma.book.findMany({
             where: {
-                is_avaliable: is_avaliable
-                    ? is_avaliable === 'true'
-                    : undefined,
+                author_name: {
+                    contains: query.author_name,
+                },
+                title: {
+                    contains: query.title,
+                },
+                year: query.year,
+                pages: {
+                    gte: query.pages,
+                },
+                is_avaliable: query.is_avaliable,
+                categories: {
+                    some: {
+                        name: query.category,
+                    },
+                },
             },
+            take: perPage,
+            skip: (page - 1) * perPage,
             include: {
                 categories: true,
             },
         });
+
+        console.log(books);
 
         return books;
     }
