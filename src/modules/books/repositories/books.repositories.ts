@@ -38,14 +38,17 @@ export class BooksRepository implements BookInterface {
                     },
                 },
             },
+            orderBy: {
+                borrowings: {
+                    _count: 'desc',
+                },
+            },
             take: perPage,
             skip: (page - 1) * perPage,
             include: {
                 categories: true,
             },
         });
-
-        console.log(books);
 
         return books;
     }
@@ -61,13 +64,22 @@ export class BooksRepository implements BookInterface {
     }
 
     async updateAvailableStatus(updateBookStatusDto: UpdateBookStatusDto) {
-        console.log(updateBookStatusDto);
         await this.prisma.book.update({
             where: {
                 id: updateBookStatusDto.book_id,
             },
             data: {
                 is_avaliable: updateBookStatusDto.is_available,
+            },
+        });
+    }
+
+    async findAllCategories() {
+        return await this.prisma.category.findMany({
+            orderBy: {
+                book: {
+                    _count: 'desc',
+                },
             },
         });
     }

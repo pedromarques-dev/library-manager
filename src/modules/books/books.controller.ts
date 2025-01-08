@@ -15,12 +15,12 @@ import { CreateBookRequestDto } from './dto/create-book-request.dto';
 import { FindAllBooksDto } from './dto/find-all-books.dto';
 
 @Controller('books')
-@UseGuards(JwtAuthGuard)
 export class BooksController {
     constructor(private readonly booksService: BooksService) {}
 
     @Post()
     @Roles(Role.ADMIN)
+    @UseGuards(JwtAuthGuard)
     async create(@Body() createBookRequestDto: CreateBookRequestDto) {
         return this.booksService.create(createBookRequestDto);
     }
@@ -30,8 +30,13 @@ export class BooksController {
         return this.booksService.findAll(query, Number(query.page));
     }
 
+    @Get('/categories')
+    async findAllCategories() {
+        return this.booksService.findAllCategories();
+    }
+
     @Get(':id')
-    async findOne(@Param() id: string) {
+    async findOne(@Param() { id }: { id: string }) {
         return this.booksService.findOne(id);
     }
 }

@@ -63,4 +63,10 @@ export class BooksService {
             book_id,
         });
     }
+
+    async findAllCategories() {
+        const categories = await this.booksRepository.findAllCategories();
+
+        return categories;
+    }
 }

@@ -3,6 +3,7 @@ import {
     Controller,
     Get,
     Headers,
+    Param,
     Post,
     Query,
     UseGuards,
@@ -51,5 +52,10 @@ export class BorrowingsController {
             query.finishedAt,
             query.userId,
         );
+    }
+
+    @Get(':id')
+    async findOneBorrowing(@Param() { id }: { id: string }) {
+        return this.borrowingsService.findBorrowingById(id);
     }
 }

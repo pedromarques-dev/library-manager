@@ -73,7 +73,7 @@ export class BorrowingRepository implements IBorrowingRepository {
     }
 
     async findOneBorrowingById(id: string) {
-        const borrowing = await this.prisma.borrowing.findMany({
+        const borrowing = await this.prisma.borrowing.findUnique({
             where: {
                 id,
             },
